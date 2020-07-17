@@ -10,7 +10,8 @@ public static class VectorExtensions
     public static Vector3 FlipZ(this Vector3 v) => new Vector3(v.x, v.y, -v.z);
 }
 
-public class AudioReverbArea : MonoBehaviour {
+public class AudioReverbArea : MonoBehaviour
+{
 
     // Static so you can control all of them from any component.
     // Set in OnValidate
@@ -18,7 +19,7 @@ public class AudioReverbArea : MonoBehaviour {
     public static bool drawFade = true;
 
     public AudioReverbPreset preset;
-    [Range(0.01f,10f)]
+    [Range(0.01f, 10f)]
     public float fadeDistance = 1f;
 
     [HideInInspector]
@@ -27,10 +28,12 @@ public class AudioReverbArea : MonoBehaviour {
 
     public bool drawGizmo;
 
+    [SerializeField, HideInInspector]
     protected Collider shape;
     protected virtual Color gizmoColour => new Color(1, 0.75f, 0, 0.7f);
 
-    private void Start() {
+    private void Start()
+    {
         AudioReverbZone zone = gameObject.AddComponent<AudioReverbZone>();
         zone.reverbPreset = preset;
         zone.minDistance = 0f;
@@ -76,16 +79,16 @@ public class AudioReverbArea : MonoBehaviour {
             {
                 Gizmos.DrawWireCube(boxCollider.center, boxCollider.size + (Vector3.one * fadeDistance));
 
-                DrawCubeCornerLine(boxCollider.size);
-                DrawCubeCornerLine(boxCollider.size.FlipX());
-                DrawCubeCornerLine(boxCollider.size.FlipY());
-                DrawCubeCornerLine(boxCollider.size.FlipZ());
+                DrawCubeCornerLine(boxCollider.size, Vector3.one);
+                DrawCubeCornerLine(boxCollider.size.FlipX(), Vector3.one.FlipX());
+                DrawCubeCornerLine(boxCollider.size.FlipY(), Vector3.one.FlipY());
+                DrawCubeCornerLine(boxCollider.size.FlipZ(), Vector3.one.FlipZ());
             }
 
-            void DrawCubeCornerLine(Vector3 size)
+            void DrawCubeCornerLine(Vector3 size, Vector3 direction)
             {
-                Gizmos.DrawLine(boxCollider.center + size / 2, boxCollider.center + (size / 2) + (Vector3.one * fadeDistance / 2));
-                Gizmos.DrawLine(boxCollider.center - size / 2, boxCollider.center - (size / 2) - (Vector3.one * fadeDistance / 2));
+                Gizmos.DrawLine(boxCollider.center + size / 2, boxCollider.center + (size / 2) + (direction * fadeDistance / 2));
+                Gizmos.DrawLine(boxCollider.center - size / 2, boxCollider.center - (size / 2) - (direction * fadeDistance / 2));
             }
         }
         else if (shape is SphereCollider sphereCollider)
